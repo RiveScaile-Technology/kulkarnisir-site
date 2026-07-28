@@ -14,8 +14,24 @@ publishes the site to GitHub Pages. No build step — the HTML is served as-is.
 
 Replace `index.html` and push to `main`. Pages redeploys automatically.
 
-## Custom domain (later)
+## Custom domain — kulkarnisir.academy
 
-When the domain is registered, add a `CNAME` file at the repo root containing
-just the domain (e.g. `kulkarnisir.com`), then set the DNS records GitHub
-provides under Settings → Pages.
+Canonical URL: **https://kulkarnisir.academy/** (apex; `www` redirects to it).
+The repo carries a `CNAME` file, and `index.html` sets the canonical/OG tags.
+
+One-time setup after registering the domain:
+
+1. **DNS at the registrar** —
+   - Apex `kulkarnisir.academy`: four `A` records →
+     `185.199.108.153`, `185.199.109.153`, `185.199.110.153`, `185.199.111.153`
+     (optionally `AAAA` → `2606:50c0:8000::153` … `2606:50c0:8003::153`)
+   - `www`: `CNAME` → `rivescaile-technology.github.io`
+2. **GitHub**: Settings → Pages → Custom domain → `kulkarnisir.academy` → Save.
+   Wait for the DNS check, then tick **Enforce HTTPS** (cert takes a few
+   minutes to ~1 hour to provision).
+3. The old `rivescaile-technology.github.io/kulkarnisir-site/` URL then
+   redirects to the custom domain automatically.
+
+Formspree note: if form submissions stop after the switch, check the form's
+allowed-domains/restrictions setting in the Formspree dashboard and add
+`kulkarnisir.academy`.
