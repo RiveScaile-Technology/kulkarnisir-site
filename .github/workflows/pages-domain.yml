@@ -23,9 +23,13 @@ jobs:
   set-domain:
     runs-on: ubuntu-latest
     steps:
+      # NOTE: the default GITHUB_TOKEN cannot update Pages settings (returns
+      # "Resource not accessible by integration") — repo administration rights
+      # are required. Add a fine-grained PAT with Pages write permission on
+      # this repo as the PAGES_ADMIN_TOKEN secret to make this workflow work.
       - name: Update Pages configuration
         env:
-          GH_TOKEN: ${{ github.token }}
+          GH_TOKEN: ${{ secrets.PAGES_ADMIN_TOKEN || github.token }}
         run: |
           set -euo pipefail
           args=()
