@@ -1,0 +1,40 @@
+name: Configure Pages custom domain
+
+# One-off operational workflow: sets the GitHub Pages custom domain (and
+# optionally HTTPS enforcement) for this repo. The Pages settings API needs
+# pages:write, which the workflow GITHUB_TOKEN can carry — unlike local
+# tooling, which has no access to repo settings.
+on:
+  workflow_dispatch:
+    inputs:
+      cname:
+        description: Custom domain to set (empty string leaves domain unchanged)
+        required: false
+        default: kulkarnisir.academy
+      enforce_https:
+        description: Also enforce HTTPS (only works once the certificate exists)
+        required: false
+        default: "false"
+
+permissions:
+  pages: write
+
+jobs:
+  set-domain:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Update Pages configuration
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          args=()
+          if [ -n "${{ inputs.cname }}" ]; then
+            args+=(-f cname='${{ inputs.cname }}')
+          fi
+          if [ "${{ inputs.enforce_https }}" = "true" ]; then
+            args+=(-F https_enforced=true)
+          fi
+          gh api -X PUT "repos/${{ github.repository }}/pages" "${args[@]}"
+          echo "--- resulting Pages config ---"
+          gh api "repos/${{ github.repository }}/pages"
